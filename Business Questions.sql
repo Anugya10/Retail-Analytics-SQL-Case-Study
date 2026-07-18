@@ -21,18 +21,79 @@
 
 --2. Write a query to identify the discrepancies in the price of the same product in the "sales_transaction" and "product_inventory" tables. 
 --   Also, update those discrepancies to match the price in both tables.
+     -- 1. Identify discrepancies (before update)
+           SELECT 
+              s.TransactionID,
+              s.price AS TransactionPrice,
+              p.price AS InventoryPrice
+           FROM sales_transaction s
+           JOIN product_inventory p ON s.productID = p.productID
+           WHERE s.price <> p.price;
 
---3. Write a SQL query to identify the null values in the dataset and replace those by “Unknown”.
+     -- 2. Temporarily allow updates without a WHERE key
+           SET sql_safe_updates = 0;
+
+     -- 3. Update the sales_transaction prices to match product_inventory
+           UPDATE sales_transaction s
+           JOIN product_inventory p ON s.productID = p.productID
+           SET s.price = p.price
+           WHERE s.price <> p.price;
+
+     -- 4. Verify all prices match after the update
+           SELECT * from sales_transaction;
+
+--3. Write a SQL query to identify the null values in the dataset and replace those with “Unknown”.
+      --1. Identify the NULL in the dataset
+           select 
+                count(*) 
+           from customer_profiles
+           where location is null;
+
+      --2. Update NULL with Unknown
+           update customer_profiles
+           set location = 'Unknown'
+           where location is null;
+
+      --3. Verify the updates
+           select * from customer_profiles;
 
 --4. Write a SQL query to clean the DATE column in the dataset.
 --   Steps:
 --     Create a separate table and change the data type of the DATE column, as it is in TEXT format, and name it as you wish to.
 --     Remove the original table from the database.
 --     Change the name of the new table and replace it with the original name of the table.
+     --1. Create a new table and add a new column
+          Create table sales_transaction_new as
+          select *,
+             cast(TransactionDate as date) as TransactionDate_updated
+          from sales_transaction;
+
+     --2. Drop the old table
+          drop table sales_transaction;
+
+     --3. Rename the new table with the old table name
+          alter table sales_transaction_new
+          rename to sales_transaction;
+
+     --4. Verify the updates
+          select * from sales_transaction;
 
 --5. Write a SQL query to summarize the total sales and quantities sold per product by the company.
+     select 
+          ProductID,
+          sum(QuantityPurchased) as TotalUnitsSold,
+          sum(price* QuantityPurchased) as TotalSales
+     from sales_transaction
+     group by ProductID
+     order by TotalSales desc;
 
 --6. Write a SQL query to count the number of transactions per customer to understand purchase frequency.
+     select 
+          CustomerID,
+          count(TransactionID) as NumberOfTransactions 
+     from Sales_transaction
+     group by CustomerID
+     order by NumberOfTransactions desc;
 
 --7. Write a SQL query to evaluate the performance of the product categories based on the total sales, 
 --   which helps us understand the product categories need to be promoted in the marketing campaigns.
