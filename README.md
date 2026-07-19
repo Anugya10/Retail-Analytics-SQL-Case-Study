@@ -459,12 +459,6 @@ Customers were successfully classified into No Orders, Low, Medium, and High Val
 - **Low:** Encourage additional purchases through discounts.
 - **Medium:** Strengthen engagement with loyalty rewards.
 - **High Value:** Retain customers using VIP benefits, personalized offers, and early product access.
-  
----
-
-# 🚀 Technologies Used
-
-- SQL (MySQL)
 - MySQL Workbench
 
-Passionate about transforming raw data into actionable business insights through data analysis and visualization.
+Pasionate about transforming raw data into actionable business insights through data analysis and visualizati
