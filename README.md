@@ -467,10 +467,4 @@ Customers were successfully classified into No Orders, Low, Medium, and High Val
 - SQL (MySQL)
 - MySQL Workbench
 
-
-
-**Anugya Singhal**
-
-Aspiring Data Analyst | SQL | Power BI | Excel | Python
-
 Passionate about transforming raw data into actionable business insights through data analysis and visualization.
