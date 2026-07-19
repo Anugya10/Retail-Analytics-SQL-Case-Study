@@ -459,19 +459,7 @@ Customers were successfully classified into No Orders, Low, Medium, and High Val
 - **Low:** Encourage additional purchases through discounts.
 - **Medium:** Strengthen engagement with loyalty rewards.
 - **High Value:** Retain customers using VIP benefits, personalized offers, and early product access.
-
----
-
-# 📌 Overall Business Insights
-
-- Data cleaning is a critical first step to ensure reliable analysis.
-- A small number of products contribute the majority of total revenue.
-- Customer purchasing behavior varies significantly, highlighting opportunities for segmentation.
-- High-value customers are key revenue drivers and should be prioritized for retention.
-- Sales trends fluctuate over time, emphasizing the importance of continuous performance monitoring.
-- Product category analysis supports better inventory planning and marketing investment.
-- Customer segmentation enables personalized campaigns that improve engagement and retention.
-
+  
 ---
 
 # 🚀 Technologies Used
@@ -479,9 +467,7 @@ Customers were successfully classified into No Orders, Low, Medium, and High Val
 - SQL (MySQL)
 - MySQL Workbench
 
----
 
-# 👨‍💻 Author
 
 **Anugya Singhal**
 
