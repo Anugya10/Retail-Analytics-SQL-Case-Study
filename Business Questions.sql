@@ -97,29 +97,137 @@
 
 --7. Write a SQL query to evaluate the performance of the product categories based on the total sales, 
 --   which helps us understand the product categories need to be promoted in the marketing campaigns.
+     select 
+          p.category, 
+          sum(s.quantitypurchased) as TotalUnitsSold,
+          sum(s.price * s.quantitypurchased) as TotalSales
+     from Sales_transaction s
+     join product_inventory p 
+          on s.productid = p.productid
+     group by p.category
+     order by TotalSales desc;
 
 --8. Write a SQL query to find the top 10 products with the highest total sales revenue from the sales transactions. 
 --   This will help the company to identify the high-sales products which needs to be focused to increase the revenue of the company.
+     select
+          ProductID,
+          sum(price * Quantitypurchased) as TotalRevenue
+     from Sales_transaction
+     group by ProductID
+     order by TotalRevenue desc
+     limit 10;
 
 --9. Write a SQL query to find the ten products with the least amount of units sold from the sales transactions, 
 --   provided that at least one unit was sold for those products.
+     select 
+          ProductID,
+          sum(QuantityPurchased) as TotalUnitsSold 
+     from Sales_transaction
+     group by ProductID
+     having sum(QuantityPurchased) > 0
+     order by TotalUnitsSold asc
+     limit 10;
 
 --10. Write a SQL query to identify the sales trend to understand the revenue pattern of the company.
+      select 
+           TransactionDate as DateTrans,
+           count(transactionID) as Transaction_count,
+           sum(quantitypurchased) as TotalUnitsSold,
+           round(sum(price * quantitypurchased),2) as TotalSales
+      from sales_transaction
+      group by TransactionDate
+      order by DateTrans desc;
 
 --11. Write a SQL query to understand the month-on-month growth rate of sales of the company, which will help understand the growth trend of the company.
+      With CTE as (
+            select 
+               month(transactiondate) as month,
+               round(sum(price * quantitypurchased),2) as Total_Sales,
+               lag(
+                  round(sum(price * quantitypurchased),2)) 
+                  over(order by month(transactiondate)) as previous_month_sales
+            from sales_transaction
+            group by month(transactiondate)
+      )
+      select 
+           month,
+           Total_Sales,
+           previous_month_sales,
+           round(
+              (Total_Sales - previous_month_sales) / 
+               previous_month_sales *100, 2) as mom_growth_percentage
+     from CTE
+     order by month asc;
 
 --12. Write a SQL query that describes the number of transactions along with the total amount spent by each customer which are on the higher side 
 --    and will help us understand the customers who are high-frequency purchase customers in the company.
+      select 
+           CustomerID,
+           count(TransactionID) as NumberofTransactions,
+           sum(price * quantitypurchased) as TotalSpent
+     from sales_transaction
+     group by CustomerID
+     having count(TransactionID) > 10 
+        and sum(price * quantitypurchased) > 1000
+     order by TotalSpent desc;
 
 --13. Write a SQL query that describes the number of transactions along with the total amount spent by each customer, 
 --    which will help us understand the customers who are occasional customers or have low purchase frequency in the company.
+      select 
+           CustomerID,
+           count(TransactionID) as NumberofTransactions,
+           sum(price * quantitypurchased) as TotalSpent
+      from sales_transaction
+      group by CustomerID
+      having count(TransactionID) <= 2 
+      order by NumberofTransactions asc, TotalSpent desc;
 
 --14. Write a SQL query that describes the total number of purchases made by each customer against each productID 
 --    to understand the repeat customers in the company.
+      select
+           CustomerID,
+           ProductID,
+           count(*) as TimesPurchased 
+      from Sales_transaction
+      group by CustomerID, ProductID
+      having count(*) > 1
+      order by TimesPurchased desc;
 
 --15. Write a SQL query that describes the duration between the first and the last purchase of the customer in that particular company to understand 
 --    the loyalty of the customer.
+      select 
+           CustomerID,
+           min(transactionDate_updated) as FirstPurchase,
+           max(transactionDate_updated) as LastPurchase,
+           datediff(
+                max(transactionDate_updated), 
+                min(transactionDate_updated)
+           ) as DaysBetweenPurchases
+      from Sales_transaction 
+      group by CustomerID
+      having DaysBetweenPurchases > 0
+      Order by DaysBetweenPurchases desc;
 
 --16. Write an SQL query that segments customers based on the total quantity of products they have purchased. 
 --    Also, count the number of customers in each segment, which will help us target a particular segment for marketing.
+      create table customer_segment as
+      select
+           cp.customerid,
+           coalesce(sum(st.quantitypurchased),0) AS total_quantity,
+      case
+        when coalesce(sum(st.quantitypurchased),0) = 0 then 'None'
+        when coalesce(sum(st.quantitypurchased),0) between 1 and 10 then 'Low'
+        when coalesce(sum(st.quantitypurchased),0) between 11 and 30 then 'Med'
+        else 'High'
+      end as customersegment
+      from customer_profiles cp
+      left join sales_transaction st
+        on cp.customerid = st.customerid
+      group by cp.customerid;
 
+      select 
+           CustomerSegment,
+           Count(*)
+      from customer_segment
+      where customersegment <> 'None'
+      group by CustomerSegment;
