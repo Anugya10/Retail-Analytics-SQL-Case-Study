@@ -461,4 +461,9 @@ Customers were successfully classified into No Orders, Low, Medium, and High Val
 - **High Value:** Retain customers using VIP benefits, personalized offers, and early product access.
 - MySQL Workbench
 
-Pasionate about transforming raw data into actionable business insights through data analysis and visualizati
+---
+
+# 🚀 Technologies Used
+
+- SQL (MySQL)
+- MySQL Workbench
